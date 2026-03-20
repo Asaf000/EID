@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta property="og:title" content="Eid Mubarak">
-<meta property="og:description" content="EID MUBARAK ✨">
-<meta property="og:image" content="logo.png">
+<meta property="og:title" content="EID MUBARAK">
+
+<meta property="og:description" content="May joy fill your home, peace dwell in your heart, & blessings light your path ✨ تقبّل الله منّا ومنكم">
+
+<meta property="og:image" content="https://eid-production.up.railway.app/logo.png">
+
+<meta property="og:url" content="https://YOUR-DOMAIN/">
+
 <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EID MUBARAK">
+<meta name="twitter:description" content="May joy fill your home, peace dwell in your heart, & blessings light your path ✨">
+<meta name="twitter:image" content="https://eid-production.up.railway.app/logo.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Eid Mubarak</title>
@@ -903,12 +912,23 @@ function toggleMusic(){
   if(music.paused){
     music.volume = 0.5;
     music.play();
+    music.dataset.played = "true";
     btn.innerHTML = "🔊";
   } else {
     music.pause();
     btn.innerHTML = "🎵";
   }
 }
+document.addEventListener("visibilitychange", () => {
+  if(document.hidden){
+    music.pause();
+  } else {
+    // resume only if user had played before
+    if(music.dataset.played === "true"){
+      music.play();
+    }
+  }
+});
 </script>
 </body>
 </html>
