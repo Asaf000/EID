@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Eid Mubarak</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --night:   #07091a;
+  --gold:    #c9943a;
+  --gold-lt: #e8c06a;
+  --cream:   #fdf8ee;
+  --sand:    #f5ead0;
+  --text-dk: #4a3520;
+  --text-md: #7a5c35;
+}
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html, body {
+  width:100%; height:100%;
+  overflow:hidden;
+  background: var(--night);
+  font-family: 'Lato', sans-serif;
+}
+
+/* ══ SCENE ══ */
+#scene {
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+}
+
+/* SKY */
+#sky {
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% -10%, #1e2468 0%, #0f1340 28%, #08091e 65%, #030409 100%);
+}
+#sky::after {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 80% 10%, rgba(40,30,90,0.5) 0%, transparent 55%);
+}
+
+/* STARS CANVAS */
+#stars { position:absolute; inset:0; pointer-events:none; }
+
+/* HORIZON WARM GLOW */
+#horizon {
+  position:absolute; bottom:0; left:0; right:0; height:32%;
+  background: linear-gradient(to top,
+    rgba(70,35,8,0.6) 0%,
+    rgba(45,22,5,0.28) 40%,
+    transparent 100%);
+  pointer-events:none;
+}
+
+/* GEOMETRIC PATTERN OVERLAY */
+#pattern {
+  position:absolute; inset:0;
+  opacity:0.045; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='70'%3E%3Cg fill='none' stroke='%23c9943a' stroke-width='0.55'%3E%3Cpolygon points='35,3 67,19 67,51 35,67 3,51 3,19'/%3E%3Cpolygon points='35,14 56,24.5 56,45.5 35,56 14,45.5 14,24.5'/%3E%3Cline x1='35' y1='3' x2='35' y2='14'/%3E%3Cline x1='67' y1='19' x2='56' y2='24.5'/%3E%3Cline x1='67' y1='51' x2='56' y2='45.5'/%3E%3Cline x1='35' y1='67' x2='35' y2='56'/%3E%3Cline x1='3' y1='51' x2='14' y2='45.5'/%3E%3Cline x1='3' y1='19' x2='14' y2='24.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: clamp(42px,9vw,70px);
+}
+
+/* ══ MOON ══ */
+#moon {
+  position:absolute;
+  top:5%; right:7%;
+  width: clamp(52px,13vw,86px);
+  height: clamp(52px,13vw,86px);
+}
+.moon-glow {
+  position:absolute; inset:-70%;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,225,130,0.18) 0%, transparent 65%);
+  animation: mpulse 4s ease-in-out infinite;
+}
+@keyframes mpulse { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.09)} }
+.moon-body {
+  position:absolute; inset:0; border-radius:50%;
+  background: radial-gradient(circle at 36% 36%, #fffce0, #f6db7a 52%, #c8952a);
+  box-shadow: 0 0 28px rgba(255,215,90,0.5), 0 0 55px rgba(255,195,70,0.22);
+}
+.moon-cut {
+  position:absolute; top:-6%; left:14%;
+  width:80%; height:80%; border-radius:50%;
+  background: #08091e;
+  box-shadow: -3px -3px 18px rgba(255,215,90,0.07);
+}
+
+/* ══ LANTERN ══ */
+#lantern {
+  position:absolute;
+  top:0; left:50%;
+  display:flex; flex-direction:column; align-items:center;
+  transform-origin: top center;
+  animation: sway 7s ease-in-out infinite;
+}
+@keyframes sway {
+  0%,100%{ transform:translateX(-50%) rotate(-5deg); }
+  50%{     transform:translateX(-50%) rotate( 5deg); }
+}
+.l-string {
+  width:1px; height:clamp(28px,7vw,50px);
+  background: linear-gradient(to bottom, rgba(200,155,50,0.55), rgba(200,155,50,0.15));
+}
+.l-body {
+  width: clamp(24px,6.5vw,42px);
+  filter: drop-shadow(0 0 10px rgba(255,195,70,0.75)) drop-shadow(0 0 26px rgba(255,155,30,0.38));
+}
+
+/* ══ CITY SILHOUETTE ══ */
+#city {
+  position:absolute; bottom:0; left:0; right:0; height:26%;
+  pointer-events:none;
+}
+
+/* ══ PARTICLES ══ */
+#particles { position:absolute; inset:0; pointer-events:none; }
+.pt {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation: ptUp linear infinite;
+}
+@keyframes ptUp {
+  from { transform:translateY(105vh); opacity:0; }
+  8%   { opacity:1; }
+  88%  { opacity:.5; }
+  to   { transform:translateY(-8vh); opacity:0; }
+}
+.shoot {
+  position:absolute; height:1px; border-radius:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,242,180,.9), transparent);
+  pointer-events:none; opacity:0;
+  animation: shoot linear infinite;
+}
+@keyframes shoot {
+  0%  { opacity:0; transform:translate(0,0); }
+  4%  { opacity:1; }
+  28% { opacity:0; transform:translate(190px,90px); }
+  100%{ opacity:0; transform:translate(190px,90px); }
+}
+
+/* ══ INTRO TEXT ══ */
+#intro {
+  position:absolute;
+  top: clamp(11%,14%,17%);
+  left:0; right:0; text-align:center;
+  pointer-events:none;
+  opacity:0; animation: fadeUp 2s .2s ease forwards;
+}
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)}
+}
+.intro-arabic {
+  font-family:'Amiri',serif;
+  font-size: clamp(26px,8.5vw,54px);
+  color: var(--gold-lt);
+  letter-spacing:.04em; line-height:1;
+  text-shadow: 0 0 28px rgba(220,175,70,.42), 0 2px 8px rgba(0,0,0,.5);
+}
+.intro-sub {
+  font-family:'Cinzel Decorative',serif;
+  font-size: clamp(7px,2.2vw,12px);
+  color: rgba(220,185,90,.45);
+  letter-spacing:.3em; margin-top:7px;
+}
+
+/* ══ CARD WRAP ══ */
+#card-wrap {
+  position:relative;
+  margin-top: clamp(52px,16vw,100px);
+  perspective:1400px;
+  transition: transform .15s ease;
+}
+
+/* ══ CARD ══ */
+.card {
+  width: clamp(162px,50vw,232px);
+  aspect-ratio: 10/16;
+  position:relative;
+  transform-style:preserve-3d;
+  transition: transform .88s cubic-bezier(.4,0,.2,1);
+  filter: drop-shadow(0 22px 44px rgba(0,0,0,.72)) drop-shadow(0 0 18px rgba(175,125,35,.2));
+}
+.card:not(.open):active { transform:scale(0.955); }
+
+.page {
+  position:absolute; inset:0;
+  border-radius:13px;
+  backface-visibility:hidden;
+  overflow:hidden;
+}
+
+/* ── INSIDE ── */
+.inside {
+  background: linear-gradient(158deg, #fdfaf3 0%, #fef8ea 50%, #faf2d8 100%);
+  z-index:1;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center;
+  padding: clamp(18px,5vw,30px) clamp(14px,4vw,22px);
+  border: 1px solid rgba(195,155,65,.3);
+  box-shadow: inset 0 0 36px rgba(205,160,60,.08);
+}
+.inside::before {
+  content:''; position:absolute; inset:8px; border-radius:8px;
+  border:.8px solid rgba(175,135,55,.2); pointer-events:none;
+}
+.inside::after {
+  content:''; position:absolute; inset:13px; border-radius:5px;
+  border:.4px solid rgba(175,135,55,.11); pointer-events:none;
+}
+
+/* corners */
+.co {
+  position:absolute;
+  width:clamp(20px,5.5vw,30px);
+  height:clamp(20px,5.5vw,30px);
+  opacity:.3;
+}
+.co.tl{top:15px;left:15px}
+.co.tr{top:15px;right:15px;transform:scaleX(-1)}
+.co.bl{bottom:15px;left:15px;transform:scaleY(-1)}
+.co.br{bottom:15px;right:15px;transform:scale(-1,-1)}
+
+/* message */
+.msg {
+  opacity:0;
+  transform:scale(.86) translateY(10px);
+  transition: opacity .9s ease, transform .9s cubic-bezier(.34,1.28,.64,1);
+  display:flex; flex-direction:column; align-items:center;
+  gap: clamp(7px,2.2vw,13px);
+}
+.msg.show { opacity:1; transform:scale(1) translateY(0); }
+.msg-icon { font-size:clamp(26px,7.5vw,40px); line-height:1; }
+.msg-title {
+  font-family:'Amiri',serif; font-style:italic;
+  font-size:clamp(19px,6vw,30px);
+  color:#663d18; letter-spacing:.02em; line-height:1;
+}
+.msg-rule {
+  width:42px; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(175,125,40,.5),transparent);
+}
+.msg-body {
+  font-family:'Amiri',serif; font-style:italic;
+  font-size:clamp(10.5px,3vw,13.5px);
+  color:#8a6638; line-height:1.9;
+}
+.msg-dua {
+  font-family:'Amiri',serif;
+  font-size:clamp(12px,3.8vw,17px);
+  color:#a8742a; letter-spacing:.04em;
+}
+.msg-stamp {
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(5.5px,1.5vw,7.5px);
+  letter-spacing:.28em; color:#b09048; opacity:.5;
+}
+
+/* ── COVER ── */
+.cover {
+  background: linear-gradient(155deg,
+    #fefaf1 0%, #fdf5e0 38%, #fef6e6 65%, #fbefce 100%);
+  z-index:2; cursor:pointer;
+  transform-origin:left center;
+  transition:transform .88s cubic-bezier(.4,0,.2,1);
+  border:1px solid rgba(195,155,60,.27);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  animation:cGlow 3.2s ease-in-out infinite;
+}
+@keyframes cGlow {
+  0%,100%{ box-shadow:0 0 18px rgba(195,150,50,.12), inset 0 0 38px rgba(255,235,165,.07); }
+  50%{     box-shadow:0 0 44px rgba(195,150,50,.30), inset 0 0 58px rgba(255,235,165,.14); }
+}
+
+.cover-frame {
+  position:absolute; inset:8px; border-radius:8px;
+  border:.8px solid rgba(175,135,55,.22); pointer-events:none;
+}
+.cover-frame::after {
+  content:''; position:absolute; inset:5px; border-radius:4px;
+  border:.4px solid rgba(175,135,55,.12);
+}
+
+/* geometric pattern on cover */
+.cov-pat {
+  position:absolute; inset:0; border-radius:12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Cg fill='none' stroke='%23c9943a' stroke-width='0.4'%3E%3Cpolygon points='18,1.5 34.5,9.75 34.5,26.25 18,34.5 1.5,26.25 1.5,9.75'/%3E%3Cpolygon points='18,8 28,13.5 28,22.5 18,28 8,22.5 8,13.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:clamp(24px,6vw,36px);
+  opacity:.05; pointer-events:none;
+}
+
+.cov-moon {
+  position:absolute; top:12px; right:12px;
+  width:clamp(16px,4.5vw,24px); height:clamp(16px,4.5vw,24px);
+  opacity:.38;
+}
+
+.cov-content {
+  display:flex; flex-direction:column; align-items:center;
+  gap:clamp(7px,2.3vw,13px); position:relative; z-index:1;
+}
+.cov-stars { color:rgba(170,125,35,.42); font-size:clamp(8px,2.4vw,11px); letter-spacing:5px; }
+.cov-arabic {
+  font-family:'Amiri',serif; font-style:italic;
+  font-size:clamp(22px,7.5vw,36px);
+  color:#7a5c28; letter-spacing:.03em; line-height:1;
+  text-shadow:0 1px 3px rgba(170,120,30,.15);
+}
+.cov-rule {
+  width:34px; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(170,125,35,.45),transparent);
+}
+.cov-tap {
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(5.5px,1.9vw,8px);
+  letter-spacing:.2em; color:#9c7438; opacity:.6;
+}
+
+/* OPEN */
+.card.open .cover {
+  transform:rotateY(-180deg);
+  pointer-events:none;
+}
+
+/* ══ BOTTOM TEXT ══ */
+#btm {
+  position:absolute;
+  bottom:clamp(14px,4vw,28px);
+  left:0; right:0; text-align:center;
+  pointer-events:none;
+  opacity:0; animation:fadeUp 2s .9s ease forwards;
+}
+#btm p {
+  font-family:'Lato',sans-serif; font-weight:300;
+  font-size:clamp(8px,2.2vw,11px);
+  color:rgba(195,160,70,.38); letter-spacing:.22em; text-transform:uppercase;
+}
+.cover-logo{
+    width:90px;
+    max-width:100%;
+    height:auto;
+
+    /* center alignment */
+    display:block;
+
+    /* soft glow */
+    filter:
+        drop-shadow(0 0 10px rgba(255, 215, 120, 0.6))
+        drop-shadow(0 0 20px rgba(255, 200, 100, 0.4));
+}
+.cover-logo{
+    filter:
+        drop-shadow(0 0 15px rgba(255, 220, 150, 0.8))
+        drop-shadow(0 0 30px rgba(255, 200, 120, 0.6));
+}
+/* LANTERN CONTAINER */
+#lanterns{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+
+/* base */
+.lantern{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  transform-origin: top center;
+}
+
+/* BIG */
+.lantern.big .l-string{ height:50px; }
+.lantern.big .l-body{ width:42px; }
+
+/* SMALL */
+.lantern.small .l-string{ height:35px; }
+.lantern.small .l-body{ width:28px; }
+
+/* SWING */
+.lantern:nth-child(1){ animation:sway1 6s ease-in-out infinite; }
+.lantern:nth-child(2){ animation:sway2 7s ease-in-out infinite; }
+.lantern:nth-child(3){ animation:sway3 6.5s ease-in-out infinite; }
+.lantern:nth-child(4){ animation:sway2 6.8s ease-in-out infinite; }
+.lantern:nth-child(5){ animation:sway1 7.2s ease-in-out infinite; }
+
+@keyframes sway1{
+  0%,100%{ transform:rotate(-5deg); }
+  50%{ transform:rotate(5deg); }
+}
+
+@keyframes sway2{
+  0%,100%{ transform:rotate(4deg); }
+  50%{ transform:rotate(-4deg); }
+}
+
+@keyframes sway3{
+  0%,100%{ transform:rotate(-3deg); }
+  50%{ transform:rotate(3deg); }
+}
+</style>
+</head>
+<body>
+
+<div id="scene">
+  <div id="sky"></div>
+  <div id="pattern"></div>
+  <canvas id="stars"></canvas>
+  <div id="horizon"></div>
+
+  <!-- MOON -->
+  <div id="moon">
+    <div class="moon-glow"></div>
+    <div class="moon-body"></div>
+    <div class="moon-cut"></div>
+  </div>
+
+  <!-- LANTERN (SVG inline) -->
+  <div id="lanterns">
+
+  <!-- BIG -->
+  <div class="lantern big">
+    <div class="l-string"></div>
+    <svg class="l-body" viewBox="0 0 44 68">
+      <line x1="22" y1="0" x2="22" y2="6" stroke="#c9943a" stroke-width="1.2"/>
+      <path d="M11 9 Q22 5 33 9 L35 15 H9 Z" fill="#a06a18"/>
+      <path d="M9 15 Q7 34 9 51 H35 Q37 34 35 15 Z" fill="rgba(255,195,70,0.15)" stroke="#c9943a"/>
+      <rect x="8" y="29" width="28" height="3" rx="1" fill="#a06a18"/>
+      <ellipse cx="22" cy="33" rx="8" ry="11" fill="rgba(255,195,55,0.10)"/>
+      <path d="M11 51 Q22 55 33 51 L31 57 H13 Z" fill="#a06a18"/>
+    </svg>
+  </div>
+
+  <!-- SMALL -->
+  <div class="lantern small">
+    <div class="l-string"></div>
+    <svg class="l-body" viewBox="0 0 44 68">
+      <line x1="22" y1="0" x2="22" y2="6" stroke="#c9943a"/>
+      <path d="M11 9 Q22 5 33 9 L35 15 H9 Z" fill="#a06a18"/>
+      <path d="M9 15 Q7 34 9 51 H35 Q37 34 35 15 Z" fill="rgba(255,195,70,0.15)" stroke="#c9943a"/>
+      <rect x="8" y="29" width="28" height="3" rx="1" fill="#a06a18"/>
+      <ellipse cx="22" cy="33" rx="8" ry="11" fill="rgba(255,195,55,0.10)"/>
+      <path d="M11 51 Q22 55 33 51 L31 57 H13 Z" fill="#a06a18"/>
+    </svg>
+  </div>
+
+  <!-- BIG -->
+  <div class="lantern big">
+    <div class="l-string"></div>
+    <svg class="l-body" viewBox="0 0 44 68">
+      <line x1="22" y1="0" x2="22" y2="6" stroke="#c9943a"/>
+      <path d="M11 9 Q22 5 33 9 L35 15 H9 Z" fill="#a06a18"/>
+      <path d="M9 15 Q7 34 9 51 H35 Q37 34 35 15 Z" fill="rgba(255,195,70,0.15)" stroke="#c9943a"/>
+      <rect x="8" y="29" width="28" height="3" rx="1" fill="#a06a18"/>
+      <ellipse cx="22" cy="33" rx="8" ry="11" fill="rgba(255,195,55,0.10)"/>
+      <path d="M11 51 Q22 55 33 51 L31 57 H13 Z" fill="#a06a18"/>
+    </svg>
+  </div>
+
+  <!-- SMALL -->
+  <div class="lantern small">
+    <div class="l-string"></div>
+    <svg class="l-body" viewBox="0 0 44 68">
+      <line x1="22" y1="0" x2="22" y2="6" stroke="#c9943a"/>
+      <path d="M11 9 Q22 5 33 9 L35 15 H9 Z" fill="#a06a18"/>
+      <path d="M9 15 Q7 34 9 51 H35 Q37 34 35 15 Z" fill="rgba(255,195,70,0.15)" stroke="#c9943a"/>
+      <rect x="8" y="29" width="28" height="3" rx="1" fill="#a06a18"/>
+      <ellipse cx="22" cy="33" rx="8" ry="11" fill="rgba(255,195,55,0.10)"/>
+      <path d="M11 51 Q22 55 33 51 L31 57 H13 Z" fill="#a06a18"/>
+    </svg>
+  </div>
+
+  <!-- BIG -->
+  <div class="lantern big">
+    <div class="l-string"></div>
+    <svg class="l-body" viewBox="0 0 44 68">
+      <line x1="22" y1="0" x2="22" y2="6" stroke="#c9943a"/>
+      <path d="M11 9 Q22 5 33 9 L35 15 H9 Z" fill="#a06a18"/>
+      <path d="M9 15 Q7 34 9 51 H35 Q37 34 35 15 Z" fill="rgba(255,195,70,0.15)" stroke="#c9943a"/>
+      <rect x="8" y="29" width="28" height="3" rx="1" fill="#a06a18"/>
+      <ellipse cx="22" cy="33" rx="8" ry="11" fill="rgba(255,195,55,0.10)"/>
+      <path d="M11 51 Q22 55 33 51 L31 57 H13 Z" fill="#a06a18"/>
+    </svg>
+  </div>
+
+</div>
+
+  <!-- CITY SILHOUETTE SVG -->
+  <svg id="city" viewBox="0 0 420 120" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#160c03" stop-opacity="0.92"/>
+        <stop offset="100%" stop-color="#0a0602" stop-opacity="1"/>
+      </linearGradient>
+    </defs>
+    <!-- central mosque dome -->
+    <ellipse cx="210" cy="42" rx="30" ry="24" fill="url(#cg)"/>
+    <rect x="195" y="42" width="30" height="68" fill="url(#cg)"/>
+    <!-- minarets -->
+    <rect x="173" y="18" width="8" height="92" fill="url(#cg)"/>
+    <ellipse cx="177" cy="18" rx="5" ry="8" fill="url(#cg)"/>
+    <rect x="239" y="18" width="8" height="92" fill="url(#cg)"/>
+    <ellipse cx="243" cy="18" rx="5" ry="8" fill="url(#cg)"/>
+    <!-- crescents -->
+    <path d="M210 22 A7 7 0 1 0 210 36 A5 5 0 1 1 210 22Z" fill="#c9943a" opacity="0.65"/>
+    <path d="M177 11 A3 3 0 1 0 177 17 A2.2 2.2 0 1 1 177 11Z" fill="#c9943a" opacity="0.6"/>
+    <path d="M243 11 A3 3 0 1 0 243 17 A2.2 2.2 0 1 1 243 11Z" fill="#c9943a" opacity="0.6"/>
+    <!-- left buildings -->
+    <rect x="0"   y="65" width="32" height="55" fill="url(#cg)"/>
+    <rect x="30"  y="52" width="18" height="68" fill="url(#cg)"/>
+    <rect x="46"  y="70" width="24" height="50" fill="url(#cg)"/>
+    <rect x="68"  y="56" width="15" height="64" fill="url(#cg)"/>
+    <rect x="81"  y="67" width="22" height="53" fill="url(#cg)"/>
+    <rect x="101" y="60" width="16" height="60" fill="url(#cg)"/>
+    <rect x="115" y="74" width="20" height="46" fill="url(#cg)"/>
+    <rect x="133" y="63" width="12" height="57" fill="url(#cg)"/>
+    <rect x="143" y="78" width="28" height="42" fill="url(#cg)"/>
+    <!-- right buildings -->
+    <rect x="253" y="76" width="28" height="44" fill="url(#cg)"/>
+    <rect x="279" y="63" width="15" height="57" fill="url(#cg)"/>
+    <rect x="292" y="70" width="22" height="50" fill="url(#cg)"/>
+    <rect x="312" y="56" width="16" height="64" fill="url(#cg)"/>
+    <rect x="326" y="68" width="20" height="52" fill="url(#cg)"/>
+    <rect x="344" y="50" width="18" height="70" fill="url(#cg)"/>
+    <rect x="360" y="72" width="24" height="48" fill="url(#cg)"/>
+    <rect x="382" y="60" width="38" height="60" fill="url(#cg)"/>
+    <!-- ground -->
+    <rect x="0" y="112" width="420" height="8" fill="url(#cg)"/>
+  </svg>
+
+  <div id="particles"></div>
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="intro-arabic">عيد مبارك</div>
+    <div class="intro-sub">EID MUBARAK</div>
+  </div>
+
+  <!-- CARD -->
+  <div id="card-wrap">
+    <div class="card" id="card">
+
+      <!-- INSIDE -->
+      <div class="page inside">
+        <svg class="co tl" viewBox="0 0 40 40" fill="none">
+          <path d="M3 37 Q3 3 37 3" stroke="#b09050" stroke-width="1.1" fill="none"/>
+          <path d="M3 27 Q3 3 27 3" stroke="#b09050" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <circle cx="3" cy="3" r="1.8" fill="#b09050" opacity="0.55"/>
+        </svg>
+        <svg class="co tr" viewBox="0 0 40 40" fill="none">
+          <path d="M3 37 Q3 3 37 3" stroke="#b09050" stroke-width="1.1" fill="none"/>
+          <path d="M3 27 Q3 3 27 3" stroke="#b09050" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <circle cx="3" cy="3" r="1.8" fill="#b09050" opacity="0.55"/>
+        </svg>
+        <svg class="co bl" viewBox="0 0 40 40" fill="none">
+          <path d="M3 37 Q3 3 37 3" stroke="#b09050" stroke-width="1.1" fill="none"/>
+          <path d="M3 27 Q3 3 27 3" stroke="#b09050" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <circle cx="3" cy="3" r="1.8" fill="#b09050" opacity="0.55"/>
+        </svg>
+        <svg class="co br" viewBox="0 0 40 40" fill="none">
+          <path d="M3 37 Q3 3 37 3" stroke="#b09050" stroke-width="1.1" fill="none"/>
+          <path d="M3 27 Q3 3 27 3" stroke="#b09050" stroke-width="0.5" fill="none" opacity="0.5"/>
+          <circle cx="3" cy="3" r="1.8" fill="#b09050" opacity="0.55"/>
+        </svg>
+
+        <div class="msg" id="msg">
+          <div class="msg-icon">🌙</div>
+          <div class="msg-title">Eid Mubarak</div>
+          <div class="msg-rule"></div>
+          <div class="msg-body">
+            May joy fill your home,<br>
+            peace dwell in your heart,<br>
+            &amp; blessings light your path ✨
+          </div>
+          <div class="msg-dua">تقبّل الله منّا ومنكم</div>
+          <div class="msg-stamp">EID AL-FITR</div>
+        </div>
+      </div>
+
+      <!-- COVER -->
+      <div class="page cover">
+        <div class="cov-pat"></div>
+        <div class="cover-frame"></div>
+        <svg class="cov-moon" viewBox="0 0 30 30" fill="none">
+          <path d="M21 4 A12 12 0 1 0 21 26 A8.5 8.5 0 1 1 21 4Z" fill="#b09050"/>
+        </svg>
+        <div class="cov-content">
+          <div class="cov-stars">✦ ✦ ✦</div>
+          <img src="logo.png" class="cover-logo">
+          <div class="cover-divider"></div>
+          <div class="cov-rule"></div>
+          <div class="cov-tap">TAP TO OPEN</div>
+          <div class="cov-stars">✦ ✦ ✦</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="btm"><p>✦ &nbsp; Wishing you a blessed Eid &nbsp; ✦</p></div>
+
+</div>
+
+<script>
+/* ── STARS ── */
+(function(){
+  const cvs = document.getElementById('stars');
+  const ctx = cvs.getContext('2d');
+  let W, H, stars = [];
+
+  function resize(){
+    W = cvs.width  = window.innerWidth;
+    H = cvs.height = window.innerHeight;
+    build();
+  }
+  function build(){
+    stars = [];
+    const n = Math.floor(W*H/3600);
+    for(let i=0;i<n;i++) stars.push({
+      x: Math.random()*W,
+      y: Math.random()*H*.70,
+      r: Math.random()*1.35+.18,
+      a: Math.random(),
+      s: Math.random()*.008+.002,
+      d: Math.random()>.5?1:-1
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(const s of stars){
+      s.a += s.s*s.d;
+      if(s.a>1||s.a<.08) s.d*=-1;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,245,205,${s.a})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  resize(); draw();
+})();
+
+/* ── SHOOTING STARS ── */
+(function(){
+  const scene = document.getElementById('scene');
+  function spawn(){
+    const el = document.createElement('div');
+    el.className='shoot';
+    el.style.cssText=`
+      left:${Math.random()*75}vw;
+      top:${Math.random()*38}vh;
+      width:${55+Math.random()*95}px;
+      transform:rotate(${16+Math.random()*14}deg);
+      animation-duration:${2.8+Math.random()*5}s;
+      animation-delay:${Math.random()*9}s;
+    `;
+    scene.appendChild(el);
+    setTimeout(()=>el.remove(),15000);
+  }
+  for(let i=0;i<4;i++) spawn();
+  setInterval(spawn,5200);
+})();
+
+/* ── GOLD PARTICLES ── */
+(function(){
+  const wrap = document.getElementById('particles');
+  const cols = ['#FFD700','#FFC107','#E8C06A','#D4AF37','#fffae0'];
+  function make(){
+    const p = document.createElement('div');
+    p.className='pt';
+    const sz = 1.4+Math.random()*3.8;
+    p.style.cssText=`
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}vw;
+      background:radial-gradient(circle,${cols[Math.floor(Math.random()*cols.length)]},transparent);
+      animation-duration:${8+Math.random()*10}s;
+      animation-delay:${Math.random()*7}s;
+    `;
+    wrap.appendChild(p);
+    setTimeout(()=>p.remove(),18000);
+  }
+  for(let i=0;i<20;i++) make();
+  setInterval(make,1300);
+})();
+
+/* ── CARD INTERACTION ── */
+const card = document.getElementById('card');
+const msg  = document.getElementById('msg');
+let isOpen = false;
+
+card.addEventListener('click',()=>{
+  if(!isOpen){
+    card.classList.add('open');
+    setTimeout(()=>msg.classList.add('show'),920);
+    isOpen=true;
+  } else {
+    msg.classList.remove('show');
+    setTimeout(()=>card.classList.remove('open'),300);
+    isOpen=false;
+  }
+});
+
+/* ── SUBTLE 3D TILT (desktop) ── */
+const wrap = document.getElementById('card-wrap');
+document.addEventListener('mousemove',e=>{
+  if(isOpen) return;
+  const dx=(e.clientX-window.innerWidth/2)/(window.innerWidth/2);
+  const dy=(e.clientY-window.innerHeight/2)/(window.innerHeight/2);
+  wrap.style.transform=`rotateY(${dx*5}deg) rotateX(${-dy*4}deg)`;
+});
+document.addEventListener('mouseleave',()=>{ wrap.style.transform=''; });
+
+/* touch tilt */
+document.addEventListener('touchmove',e=>{
+  if(isOpen||e.touches.length>1) return;
+  const t=e.touches[0];
+  const dx=(t.clientX-window.innerWidth/2)/(window.innerWidth/2);
+  const dy=(t.clientY-window.innerHeight/2)/(window.innerHeight/2);
+  wrap.style.transform=`rotateY(${dx*2.5}deg) rotateX(${-dy*2}deg)`;
+},{passive:true});
+document.addEventListener('touchend',()=>{ wrap.style.transform=''; });
+</script>
+</body>
+</html>
